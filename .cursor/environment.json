@@ -1,0 +1,12 @@
+{
+  "name": "Muta (Expo 57)",
+  "user": "ubuntu",
+  "install": "npm install --legacy-peer-deps",
+  "terminals": [
+    {
+      "name": "expo-web",
+      "command": "npx expo start --web --port 8081"
+    }
+  ],
+  "ports": [8081]
+}
