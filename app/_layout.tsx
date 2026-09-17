@@ -56,7 +56,7 @@ export default function RootLayout() {
           <Stack.Screen name="(tabs)" />
           <Stack.Screen name="index" />
           <Stack.Screen name="(auth)" />
-          <Stack.Screen name="kesfet" options={{ animation: 'slide_from_right' }} />
+          <Stack.Screen name="kesfet" options={{ animation: 'none' }} />
           <Stack.Screen name="mesaj/[id]" options={{ animation: 'slide_from_right' }} />
           <Stack.Screen name="kullanici/[id]" options={{ animation: 'slide_from_right' }} />
           <Stack.Screen name="destek/index" options={{ animation: 'slide_from_right' }} />

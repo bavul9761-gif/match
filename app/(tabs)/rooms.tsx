@@ -35,10 +35,10 @@ export default function RoomsScreen() {
   );
 
   return (
-    <Screen edges={['top']}>
+    <Screen edges={['top']} solidBackground>
       <View style={styles.header}>
         <Text style={styles.title}>Tüm odalar</Text>
-        <Text style={styles.sub}>Party · Dating · Karaoke · Game</Text>
+        <Text style={styles.sub}>Party · Dating · Karaoke</Text>
       </View>
       <FlatList
         data={rooms}

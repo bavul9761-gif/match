@@ -6,6 +6,7 @@ export async function CanliOdalariGetir(limit = 20): Promise<Room[]> {
     .from('rooms')
     .select('*, host:profiles!rooms_host_id_fkey(*)')
     .eq('is_live', true)
+    .neq('mode', 'game')
     .order('listener_count', { ascending: false })
     .limit(limit);
   if (error) throw error;
@@ -17,6 +18,7 @@ export async function TrendOdalariGetir(limit = 10): Promise<Room[]> {
     .from('rooms')
     .select('*, host:profiles!rooms_host_id_fkey(*)')
     .eq('is_live', true)
+    .neq('mode', 'game')
     .order('total_coins_earned', { ascending: false })
     .limit(limit);
   if (error) throw error;

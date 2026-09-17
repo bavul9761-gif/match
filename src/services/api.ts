@@ -6,6 +6,7 @@ export async function fetchLiveRooms(limit = 30): Promise<Room[]> {
     .from('rooms')
     .select('*, host:profiles!rooms_host_id_fkey(*)')
     .eq('is_live', true)
+    .neq('mode', 'game')
     .order('listener_count', { ascending: false })
     .limit(limit);
 
