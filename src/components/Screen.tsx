@@ -6,12 +6,22 @@ import { colors } from '../theme/colors';
 
 type Props = ViewProps & {
   edges?: ('top' | 'bottom' | 'left' | 'right')[];
+  /** Feed ekranlari: gradient/desen yok, duz renk */
+  solidBackground?: boolean;
 };
 
-export function Screen({ children, style, edges = ['top', 'bottom'], ...rest }: Props) {
+export function Screen({
+  children,
+  style,
+  edges = ['top', 'bottom'],
+  solidBackground = false,
+  ...rest
+}: Props) {
   return (
-    <View style={styles.root}>
-      <LinearGradient colors={[...colors.gradientNight]} style={StyleSheet.absoluteFill} />
+    <View style={[styles.root, solidBackground && styles.solidRoot]}>
+      {solidBackground ? null : (
+        <LinearGradient colors={[...colors.gradientNight]} style={StyleSheet.absoluteFill} />
+      )}
       <SafeAreaView style={[styles.safe, style]} edges={edges} {...rest}>
         {children}
       </SafeAreaView>
@@ -22,6 +32,9 @@ export function Screen({ children, style, edges = ['top', 'bottom'], ...rest }: 
 const styles = StyleSheet.create({
   root: {
     flex: 1,
+    backgroundColor: colors.bg,
+  },
+  solidRoot: {
     backgroundColor: colors.bg,
   },
   safe: {

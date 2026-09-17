@@ -51,7 +51,7 @@ export default function KesfetEkrani() {
   );
 
   return (
-    <Screen edges={['top']}>
+    <Screen edges={['top']} solidBackground>
       <ModulHataSiniri modulAdi="kesfet">
         <View style={styles.header}>
           <Pressable onPress={() => router.back()}>

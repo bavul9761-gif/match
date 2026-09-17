@@ -1,6 +1,5 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
 import { colors, radii, typography } from '../theme/colors';
 
 type Props = {
@@ -11,14 +10,14 @@ type Props = {
 export function WalletChip({ coins, diamonds }: Props) {
   return (
     <View style={styles.row}>
-      <LinearGradient colors={['#3A2040', '#241028']} style={styles.chip}>
-        <Text style={styles.emoji}>🪙</Text>
+      <View style={styles.chip}>
+        <Text style={styles.label}>Coin</Text>
         <Text style={styles.value}>{format(coins)}</Text>
-      </LinearGradient>
-      <LinearGradient colors={['#1F2A4A', '#182038']} style={styles.chip}>
-        <Text style={styles.emoji}>💎</Text>
+      </View>
+      <View style={[styles.chip, styles.chipDiamond]}>
+        <Text style={styles.label}>Elmas</Text>
         <Text style={styles.value}>{format(diamonds)}</Text>
-      </LinearGradient>
+      </View>
     </View>
   );
 }
@@ -40,12 +39,17 @@ const styles = StyleSheet.create({
     gap: 6,
     paddingHorizontal: 10,
     paddingVertical: 6,
-    borderRadius: radii.pill,
+    borderRadius: radii.md,
     borderWidth: 1,
     borderColor: colors.border,
+    backgroundColor: colors.bgCard,
   },
-  emoji: {
-    fontSize: 12,
+  chipDiamond: {
+    backgroundColor: colors.bgElevated,
+  },
+  label: {
+    ...typography.micro,
+    color: colors.textMuted,
   },
   value: {
     ...typography.caption,

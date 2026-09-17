@@ -58,7 +58,7 @@ export default function HomeScreen() {
   );
 
   return (
-    <Screen edges={['top']}>
+    <Screen edges={['top']} solidBackground>
       <ModulHataSiniri modulAdi="ana-sayfa">
         <ScrollView
           refreshControl={
