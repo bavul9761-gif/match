@@ -5,6 +5,38 @@
 **Teknoloji:** React + Vite + TypeScript  
 **Hedef branch:** `replit/astral-falls` (`match` deposunda ayrı branch)
 
+## Cursor'a doğrudan verilecek talimat
+
+> `bavul9761-gif/match` deposundaki `replit/astral-falls` branch'inin
+> `imports/astral-falls-reference/` klasörünü kaynak al. Bu, Astral Falls
+> oyununun **onaylanmış görünüm ve davranış referansıdır**. Oyunu mevcut
+> uygulamaya entegre et; **kendin yeniden tasarlama veya yeniden üretme**.
+>
+> Özellikle `artifacts/astral-falls/src/components/RelicSymbol.tsx` içindeki
+> **tüm SVG sembol çizimlerini ve renklerini birebir koru**. Sembollerin
+> silüetini, kristal yüzeylerini, ışıklarını, renklerini, boyutlarını ve
+> sembol kimliklerini değiştirme. Kendi sembollerini üretme; harici slot
+> görselleri veya Pragmatic Play varlıklarıyla değiştirme. En güncel kozmik
+> kristal sembollerini kullan; önceki GitHub commit'inden ya da eski ZIP'ten
+> sembol alma.
+>
+> `src/App.tsx`, `src/index.css`, `src/components/`, `src/game/audio.ts`
+> kaynaklarındaki ekran düzenini, mobil görünümü, animasyonları, sesleri,
+> metinleri, bahis kontrolünü, 6×5 alanı, bonus/çarpan sunumunu ve
+> 10/20/30/50/∞ otomatik oynatma kontrollerini **görsel ve etkileşimsel
+> olarak aynı tut**. Tema, tipografi, ikonlar, arka plan ve efektleri
+> yeniden yorumlama; genel bir slot şablonuna dönüştürme. Görünüm
+> değişikliği gerekirse önce sahibine sor; kendi başına karar verme.
+>
+> **Yalnızca entegrasyon katmanını uyarla:** oturum, sunucu kaynaklı tur
+> sonucu, sunucu bakiyesi ve hata işleme. Tarayıcıdaki demo RNG/kredi
+> mantığını gerçek para/coin için taşıma. Diğer oyunları değiştirme,
+> branch'i ana uygulamaya bütün hâliyle merge etme. Her turdan sonra
+> sunucu sonucunu mevcut animasyonda oynat. Entegrasyon sonunda hem
+> masaüstü hem mobil ekranı bu branch'teki referansla karşılaştır:
+> semboller, yerleşim, renkler, animasyonlar, metinler ve kontroller
+> aynı kalmalı; sadece veri kaynağı sunucu olmalı.
+
 ## Sınır
 
 Bu Replit projesi **yalnızca demo oyun arayüzüdür**. Buradaki
@@ -28,7 +60,7 @@ değiştirmeyin.
 ## Entegrasyon sözleşmesi
 
 1. Mevcut uygulamanın oturumu, bahis sınırları ve cüzdanı üzerinden sunucuya
-   spin isteği gönderin. Sunucu bahsi tek seferde işlemesin; çift tıklama ve
+   spin isteği gönderin. Sunucu bahsi yalnızca bir kez işlemeli; çift tıklama ve
    tekrar gelen istekler için işlem kimliği/idempotency kullanın.
 2. Sunucu, **sonuç ve ödeme hesaplamasını kendisi yapmalı** ve gösterilecek
    6×5 başlangıç ızgarasını, her zincirde kaybolan hücreleri ve sonraki
