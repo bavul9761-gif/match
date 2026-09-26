@@ -4,7 +4,7 @@
  */
 export const ROWS = 5;
 export const COLS = 6;
-export const BET_OPTIONS = [10, 20, 50, 100, 250] as const;
+export const BET_OPTIONS = [10, 20, 50, 100, 250, 500] as const;
 
 export type SymbolId =
   | 'sun'

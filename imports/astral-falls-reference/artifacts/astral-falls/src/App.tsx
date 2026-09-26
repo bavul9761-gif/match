@@ -6,6 +6,7 @@ import type { Cell } from './game/engine';
 
 const formatNumber = (value: number) => Number(value || 0).toLocaleString('tr-TR', { maximumFractionDigits: 2 });
 const roundBet = (value: number) => Math.round(value * 100) / 100;
+const AUTO_COUNTS = [10, 20, 30, 50, null] as const;
 
 function BrandMark() {
   return (
@@ -36,6 +37,8 @@ function HelpDialog({ onClose }: { onClose: () => void }) {
           <li>Her düşüşte yeni bir eşleşme olabilir. Zincir, eşleşme kalmayana kadar sürer.</li>
           <li>Çarpan mühürleri kazançlara güç katar. Etkin toplam çarpanı oyun alanının yanında görünür.</li>
           <li>Bir turda 4 veya daha fazla geçit sembolü, 15 ücretsiz tur başlatır.</li>
+          <li>Tur bahsi en fazla 500 demo kredidir. Otomatik oynatma 10, 20, 30, 50 tur veya durdurulana kadar sürebilir; ücretsiz turlar da tur sayısına dahildir.</li>
+          <li>Otomatik oynatma istenildiğinde durdurulabilir; devam eden tur tamamlanır. Bakiye yetersizse kendiliğinden durur.</li>
           <li>Turbo modu animasyonları hızlandırır. Ses düğmesi oyun seslerini açar veya kapatır.</li>
         </ul>
         <p className="modal-note">YALNIZCA DEMO · KREDİLERİN PARASAL DEĞERİ YOKTUR</p>
@@ -48,15 +51,24 @@ function SlotGame() {
   const {
     board, phase, highlightIds, credits, bet, setBet, spin, muted, toggleMute,
     turbo, toggleTurbo, freeSpins, lastWin, totalMultiplier, cascades,
-    statusText, history, resetDemo,
+    statusText, history, resetDemo, isAutoPlaying, autoPlayRemaining,
+    autoPlayPlayed, startAutoPlay, stopAutoPlay,
   } = useSlotGame();
   const [showHelp, setShowHelp] = useState(false);
+  const [betDraft, setBetDraft] = useState<string | null>(null);
   const busy = phase !== 'idle';
-  const canSpin = !busy && (credits >= bet || freeSpins > 0);
+  const canSpin = !busy && !isAutoPlaying && (credits >= bet || freeSpins > 0);
   const cells = board.flat() as Cell[];
   const highlighted = new Set(highlightIds);
 
-  const adjustBet = (next: number) => setBet(roundBet(Math.max(0.2, Math.min(100, next))));
+  const adjustBet = (next: number) => setBet(roundBet(Math.max(0.2, Math.min(500, next))));
+  const commitBet = () => {
+    if (betDraft !== null && betDraft.trim() !== '') {
+      const amount = Number(betDraft);
+      if (Number.isFinite(amount)) adjustBet(amount);
+    }
+    setBetDraft(null);
+  };
 
   return (
     <div className="app-shell">
@@ -122,17 +134,35 @@ function SlotGame() {
             <section className="panel balance-panel">
               <div className="panel-label">DEMO BAKİYESİ</div>
               <div className="balance-value" data-testid="text-credits">{formatNumber(credits)} <small>KREDİ</small></div>
-               <button type="button" className="reset-link" onClick={resetDemo} disabled={busy} data-testid="button-reset-demo"><RotateCcw size={12} /> Demo bakiyesini yenile</button>
+               <button type="button" className="reset-link" onClick={resetDemo} disabled={busy || isAutoPlaying} data-testid="button-reset-demo"><RotateCcw size={12} /> Demo bakiyesini yenile</button>
               <div className="balance-line" />
               <div className="bet-header">
                 <span className="panel-label">TUR BAHİSİ</span>
-                <span className="bet-value" data-testid="text-bet">{formatNumber(bet)}</span>
+                 <label className="bet-value">
+                   <input
+                     className="bet-input"
+                     type="number"
+                     inputMode="decimal"
+                     min="0.2"
+                     max="500"
+                     step="0.2"
+                     value={betDraft ?? bet}
+                     onFocus={() => setBetDraft(String(bet))}
+                     onChange={(event) => setBetDraft(event.target.value)}
+                     onBlur={commitBet}
+                     onKeyDown={(event) => { if (event.key === 'Enter') event.currentTarget.blur(); }}
+                     disabled={busy || isAutoPlaying || freeSpins > 0}
+                     aria-label="Tur bahsi, en fazla 500 demo kredi"
+                     data-testid="input-bet"
+                   />
+                   <small>/ 500</small>
+                 </label>
               </div>
               <div className="bet-controls" aria-label="Bahis ayarları">
-                 <button type="button" className="adjust-btn half" onClick={() => adjustBet(bet / 2)} disabled={busy || freeSpins > 0 || bet <= 0.2} aria-label="Bahsi yarıya indir" data-testid="button-half-bet">½</button>
-                 <button type="button" className="adjust-btn" onClick={() => adjustBet(bet - 0.2)} disabled={busy || freeSpins > 0 || bet <= 0.2} aria-label="Bahsi azalt" data-testid="button-decrease-bet"><Minus /></button>
-                 <button type="button" className="adjust-btn" onClick={() => adjustBet(bet + 0.2)} disabled={busy || freeSpins > 0 || bet >= 100} aria-label="Bahsi artır" data-testid="button-increase-bet"><Plus /></button>
-                 <button type="button" className="adjust-btn double" onClick={() => adjustBet(bet * 2)} disabled={busy || freeSpins > 0 || bet >= 100} aria-label="Bahsi iki katına çıkar" data-testid="button-double-bet">2×</button>
+                 <button type="button" className="adjust-btn half" onClick={() => adjustBet(bet / 2)} disabled={busy || isAutoPlaying || freeSpins > 0 || bet <= 0.2} aria-label="Bahsi yarıya indir" data-testid="button-half-bet">½</button>
+                 <button type="button" className="adjust-btn" onClick={() => adjustBet(bet - 0.2)} disabled={busy || isAutoPlaying || freeSpins > 0 || bet <= 0.2} aria-label="Bahsi azalt" data-testid="button-decrease-bet"><Minus /></button>
+                 <button type="button" className="adjust-btn" onClick={() => adjustBet(bet + 0.2)} disabled={busy || isAutoPlaying || freeSpins > 0 || bet >= 500} aria-label="Bahsi artır" data-testid="button-increase-bet"><Plus /></button>
+                 <button type="button" className="adjust-btn double" onClick={() => adjustBet(bet * 2)} disabled={busy || isAutoPlaying || freeSpins > 0 || bet >= 500} aria-label="Bahsi iki katına çıkar" data-testid="button-double-bet">2×</button>
               </div>
             </section>
 
@@ -140,6 +170,37 @@ function SlotGame() {
               <RotateCcw aria-hidden="true" />
               {busy ? 'DÜŞÜYOR...' : credits < bet && freeSpins === 0 ? 'KREDİ YETERSİZ' : freeSpins > 0 ? 'ÜCRETSİZ TURU OYNA' : 'DÖNDÜR'}
             </button>
+
+             <section className="panel auto-panel" aria-label="Otomatik oynatma">
+               <div className="auto-header">
+                 <span className="panel-label">OTOMATİK OYNATMA</span>
+                 {isAutoPlaying && <span className="auto-live" aria-live="polite">
+                   {autoPlayRemaining === null ? `${autoPlayPlayed} tur oynandı · sürekli` : `${autoPlayRemaining} tur kaldı`}
+                 </span>}
+               </div>
+               {isAutoPlaying ? (
+                 <button type="button" className="auto-stop" onClick={stopAutoPlay} data-testid="button-stop-auto">
+                   OTOMATİK OYNATMAYI DURDUR
+                 </button>
+               ) : (
+                 <div className="auto-options">
+                   {AUTO_COUNTS.map((count) => (
+                     <button
+                       type="button"
+                       key={count ?? 'endless'}
+                       onClick={() => startAutoPlay(count)}
+                       disabled={busy || (credits < bet && freeSpins === 0)}
+                       aria-label={count === null ? 'Durmadan otomatik oyna' : `${count} tur otomatik oyna`}
+                       title={count === null ? 'Durdurulana veya bakiye bitene kadar' : `${count} tur`}
+                       data-testid={`button-auto-${count ?? 'endless'}`}
+                     >
+                       {count ?? '∞'}
+                     </button>
+                   ))}
+                 </div>
+               )}
+               <p className="auto-hint">10 · 20 · 30 · 50 · ∞ durmadan</p>
+             </section>
 
             <section className="panel toggle-panel" aria-label="Oyun seçenekleri">
               <div className="toggle-row">

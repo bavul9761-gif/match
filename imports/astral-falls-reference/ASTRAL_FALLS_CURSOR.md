@@ -43,10 +43,16 @@ değiştirmeyin.
    sunucudan tekrar okuyun. `resetDemo` ve tarayıcı bakiyesi üretimde
    bulunmamalı. Başarısız istek için istemcide varsayımsal iade yapmayın;
    sunucudaki işlem sonucuna göre durumu gösterin.
-5. Otomatik oynatma, eşzamanlı spin, geciken yanıt, ağ kopması, sayfa yenileme,
-   bonus dönüşlerinin devamı ve animasyonu atlama durumlarını ele alın.
-   Mobil ve reduced-motion deneyimini test edin.
-6. Yayınlamadan önce ilgili bölgedeki lisans/yaş sınırı ve sorumlu oyun
+5. Demo arayüzündeki en yüksek bahis 500 kredidir. Otomatik oynatma 10, 20,
+   30, 50 veya süresiz tur seçeneği sunar; ücretsiz turlar da sayaçta bir tur
+   sayılır. Durdurma isteği yeni tur başlatmamalı, başlamış turu tamamlamalı.
+   Bakiye yetersizse otomatik akış durmalı. Canlı uygulamada bu davranışı
+   **sunucu sonuçlarını sırayla bekleyen** bir adaptörle uygulayın; istemcide
+   önceden çoklu sonuç veya bahsi hesaplamayın.
+6. Eşzamanlı spin, geciken yanıt, ağ kopması, sayfa yenileme, bonus dönüşlerinin
+   devamı ve animasyonu atlama durumlarını ele alın. Mobil ve reduced-motion
+   deneyimini test edin.
+7. Yayınlamadan önce ilgili bölgedeki lisans/yaş sınırı ve sorumlu oyun
    gereksinimlerini uygulamanın sahibi değerlendirmelidir.
 
 Bu branch'i ana uygulamaya bütün hâliyle merge etmeyin; oyunu ayrı modül
